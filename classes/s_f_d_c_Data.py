@@ -775,3 +775,5 @@ def find_expressions_VWA(path_video,title,result_str):
         device.destroyAllWindows()  
     except Exception as e:
          messagebox.showerror(title="Error",message=f"Error : {e}")         
+
+#-----------------------------------------------------------------------------------------------------------> I am L          
