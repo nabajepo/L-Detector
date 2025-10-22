@@ -1,6 +1,7 @@
 #--------------------------------------------SEARCH-FIND-DISPLAY-COMPARE-DATA---------------------------------------------------#
 #packages
 import os
+
 import threading
 import numpy as np
 import cv2 as device
@@ -390,11 +391,12 @@ def find_faces_in_VW(faces_folder,work_folder,title,path_videos,resutR):
                     device.rectangle(frame,(x,y),(x+w,y+h),app.get_red_hex(),2)
                     #we check face in folder
                     resultCFF=compare_face_folder(path_I,app.get_images_from_folder(os.path.join(faces_folder,"faces")))
+                    #if we found a match 
                     if len(resultCFF) > 0:
                         #drawing a rectangle above
                         device.rectangle(frame,(x,y),(x+w,y+h),app.get_green_bgr_color(),2)
-                        #dispaly result
-                        threading.Thread(target=display_images,args=(resultCFF,False)).start()
+                        #display result
+                        threading.Thread(target=display_images,args=(resultCFF,False)).start()   
              #show frame
              device.namedWindow(title,device.WINDOW_NORMAL)
              device.resizeWindow(title,bounds[0],bounds[1])
