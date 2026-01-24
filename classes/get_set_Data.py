@@ -236,6 +236,14 @@ def get_bleu_hex():
 def get_green_bgr_color():
     return (24, 77, 8)
 
+#green in screen
+def get_green_in_screen():
+    return (0,255,0,250)
+
+#green draw
+def get_green_draw():
+    return (0,255,0)
+
 #font for frame's text 
 def get_button_font():
     return ("Arial", 12, "bold")
@@ -246,15 +254,14 @@ def get_loading_font():
 
 #font for title inside frame
 def get_title_font():
-    return ("Arial", 19,"bold")
+    return ("Arial", 20,"bold")
 
 #font for entry
 def get_entry_font():
     return  ("Arial",25)
 #to get title for the app 
 def get_title():
-    return "L-detector"
-
+    return "L-Detector"
 
 #unicode for face
 def get_face_unicode():
@@ -311,6 +318,15 @@ def get_start_unicode():
 #congrat unicode
 def get_congrat_unicode():
     return "\U0001F389"
+
+#screen unicode 
+def get_screen_unicode():
+    return "\U0001F441"
+
+#trash unicode
+def get_trash_unidode():
+    return "\U0001F5D1"
+
 
 
 #-----------------------------------------------------------------------------------------------------------> I am L 

@@ -67,6 +67,10 @@ def faces_images():
                 look_for_faces.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 facesLabel.config(fg="red")
                 faces_button.config(state=NORMAL)
+        #close 
+        def quit_all():
+            FI_frame.destroy() #close the frame
+            os._exit(0) #close the process           
         # Button(for faces)
         faces_button = Button(FI_frame, text=f"{app.get_images_unicode()}  Please select an image with faces to detect", command=check_faces,
                         font=app.get_button_font(),
@@ -193,6 +197,7 @@ def faces_images():
         FI_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         FI_frame.resizable(False, False)
         FI_frame.config(background=app.get_hex_white_color())
+        FI_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         FI_frame.mainloop()
     except Exception as e:
@@ -244,6 +249,10 @@ def faces_videos():
                 look_for_faces.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 facesLabel.config(fg="red")
                 faces_button.config(state=NORMAL)
+        #close
+        def quit_all():
+            FV_frame.destroy() #close the frame
+            os._exit(0) #close the process            
         # Button(for faces)
         faces_button = Button(FV_frame, text=f"{app.get_images_unicode()}  Please select an image with faces to detect", 
                               command=check_faces,font=app.get_button_font(),
@@ -340,6 +349,7 @@ def faces_videos():
         FV_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         FV_frame.resizable(False, False)
         FV_frame.config(background=app.get_hex_white_color())
+        FV_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         FV_frame.mainloop()
     except Exception as e:
@@ -390,6 +400,10 @@ def faces_webcam():
                 look_for_faces.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 facesLabel.config(fg="red")
                 faces_button.config(state=NORMAL)
+        #close 
+        def quit_all():
+            FW_frame.destroy() #close the frame
+            os._exit(0) #close the process        
         # Button(for faces)
         faces_button = Button(FW_frame, text=f"{app.get_images_unicode()}  Please select an image with faces to detect", 
                               command=check_faces,font=app.get_button_font(),
@@ -454,12 +468,13 @@ def faces_webcam():
         FW_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         FW_frame.resizable(False, False)
         FW_frame.config(background=app.get_hex_white_color())
+        FW_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         FW_frame.mainloop()
     except Exception as e:
         messagebox.showerror(title="Error",message=f"Error : {e}")  
 
-#-------------------------------------------------------------------------------------->Objects     
+#-------------------------------------------------------------------------------------->Objects (IVW)
 #frame for Objects/images
 def objects_images():
     try:
@@ -502,7 +517,10 @@ def objects_images():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
-                
+        #close
+        def quit_all():
+            OI_frame.destroy() #close the frame
+            os._exit(0) #close the process         
         # Button(for save)
         save_button = Button(OI_frame, text=f"{app.get_objects_unicode()}  Download the list of objects we can detect", 
                               command=save_file,font=app.get_button_font(),
@@ -674,6 +692,7 @@ def objects_images():
         OI_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         OI_frame.resizable(False, False)
         OI_frame.config(background=app.get_hex_white_color())
+        OI_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         OI_frame.mainloop()
     except Exception as e:    
@@ -721,6 +740,10 @@ def objects_videos():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
+        #close
+        def quit_all():
+            OV_frame.destroy() #close the frame
+            os._exit(0) #close the process                    
         # Button(for save)
         save_button = Button(OV_frame, text=f"{app.get_objects_unicode()}  Download the list of objects we can detect", 
                               command=save_file,font=app.get_button_font(),
@@ -877,6 +900,7 @@ def objects_videos():
         OV_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         OV_frame.resizable(False, False)
         OV_frame.config(background=app.get_hex_white_color())
+        OV_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         OV_frame.mainloop()
     except Exception as e:    
@@ -921,6 +945,10 @@ def objects_webcam():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
+        #close
+        def quit_all():
+            OW_frame.destroy() #close the frame
+            os._exit(0) #close the process                     
         # Button(for save)
         save_button = Button(OW_frame, text=f"{app.get_objects_unicode()}  Download the list of objects we can detect", 
                               command=save_file,font=app.get_button_font(),
@@ -1039,12 +1067,13 @@ def objects_webcam():
         OW_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         OW_frame.resizable(False, False)
         OW_frame.config(background=app.get_hex_white_color())
+        OW_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         OW_frame.mainloop()
     except Exception as e:    
         messagebox.showerror(title="Error",message=f"Error : {e}")
   
-#-------------------------------------------------------------------------------------->Micro expressions
+#-------------------------------------------------------------------------------------->Micro expressions (IVW)
 #frame for Micro/images
 def micro_images():
     try:
@@ -1087,7 +1116,10 @@ def micro_images():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
-                
+        #close        
+        def quit_all():
+            MI_frame.destroy() #close the frame
+            os._exit(0) #close the process  
         # Button(for save)
         save_button = Button(MI_frame, text=f"{app.get_objects_unicode()}  Download the list of expressions we can detect", 
                               command=save_file,font=app.get_button_font(),
@@ -1262,6 +1294,7 @@ def micro_images():
         MI_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         MI_frame.resizable(False, False)
         MI_frame.config(background=app.get_hex_white_color())
+        MI_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         MI_frame.mainloop()
     except Exception as e:    
@@ -1309,6 +1342,10 @@ def micro_videos():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
+        #close
+        def quit_all():
+            MV_frame.destroy() #close the frame
+            os._exit(0) #close the process          
                 
         # Button(for save)
         save_button = Button(MV_frame, text=f"{app.get_objects_unicode()}  Download the list of expressions we can detect", 
@@ -1473,6 +1510,7 @@ def micro_videos():
         MV_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         MV_frame.resizable(False, False)
         MV_frame.config(background=app.get_hex_white_color())
+        MV_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         MV_frame.mainloop()
     except Exception as e:    
@@ -1518,7 +1556,10 @@ def micro_webcam():
             except Exception as e:
                 save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
                 saveLabel.config(fg="red")
-                
+        #close
+        def quit_all():
+            MW_frame.destroy() #close the frame
+            os._exit(0) #close the process         
         # Button(for save)
         save_button = Button(MW_frame, text=f"{app.get_objects_unicode()}  Download the list of expressions we can detect", 
                               command=save_file,font=app.get_button_font(),
@@ -1636,9 +1677,196 @@ def micro_webcam():
         MW_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         MW_frame.resizable(False, False)
         MW_frame.config(background=app.get_hex_white_color())
+        MW_frame.protocol("WM_DELETE_WINDOW", quit_all)
         #show 
         MW_frame.mainloop()
     except Exception as e:    
         messagebox.showerror(title="Error",message=f"Error : {e}")
 
+#-------------------------------------------------------------------------------------->Objects and Micro expressions (S)
+def object_micro_screen(choice):
+    try:
+        # Get frame bounds
+        bounds = app.get_bounds()[1]
+        # Create main window
+        OMS_frame = Tk()
+        # Variables
+        save_str= StringVar()
+        index_str=StringVar()
+        result=StringVar()
+        #check  choice
+        if choice == "objects":
+            elt= "object"
+        else:
+            elt="micro-expression"    
+        # Images
+        icon = PhotoImage(file=app.get_path_to_logo(0))
+        #check faces
+        def save_file():
+            try:
+                #to get path to file
+                path_file=app.get_path_file()
+                if len(path_file) > 0:
+                    #color
+                    saveLabel.config(fg=app.get_hex_green_color())
+                    #change save_str
+                    save_str.set(f"We are loading the program in {os.path.basename(path_file)} ... {app.get_wait_unicode()}")
+                    #update
+                    OMS_frame.update_idletasks()
+                    #time wait
+                    time.sleep(3)
+                    #load
+                    if choice == "objects":
+                        load=app.set_file(path_file,app.get_String(app.get_Objets()[1]))
+                    else: 
+                        load=app.set_file(path_file,app.get_String(app.get_Expressions()[1]))   
+                    #if succeed
+                    if load[0]:
+                       #change save_str
+                       save_str.set(f"Successful loaded  {app.get_congrat_unicode()} ") 
+                    else:
+                       raise Exception(load[1]) 
+                else:
+                    raise Exception("Nothing selected")    
+                
+            except Exception as e:
+                save_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
+                saveLabel.config(fg="red")
+        #close
+        def quit_all():
+            OMS_frame.destroy() #close the frame
+            os._exit(0) #close the process                    
+        # Button(for save)
+        save_button = Button(OMS_frame, text=f"{app.get_objects_unicode()}  Download the list of {elt} we can detect", 
+                              command=save_file,font=app.get_button_font(),
+                              width=52, height=2,
+                              bg=app.get_hex_green_color(),
+                              fg=app.get_hex_white_color())
+        save_button.pack(pady=5)
+        #save label
+        saveLabel = Label(OMS_frame, textvariable=save_str, font=app.get_loading_font(), 
+                          fg=app.get_hex_green_color(),bg=app.get_hex_white_color())
+        saveLabel.pack(pady=3)
+        #get index
+        def get_index():
+            global index_value
+            try:
+                 #close entry
+                 get_button.config(state=DISABLED)
+                 #close entry
+                 entry.config(state=DISABLED)
+                 #update
+                 OMS_frame.update_idletasks()
+                 #value
+                 value=entry.get()
+                 if  value != "all" : 
+                     #look for the entry index
+                     if choice == "objects":
+                        index=app.getIndexFor(entry.get(),app.get_Objets())
+                     else: 
+                        index=app.getIndexFor(entry.get(),app.get_Expressions())   
+                     #check the index
+                     if index != -1:
+                        index_str.set(f"Index : {index} {app.get_congrat_unicode()}")
+                        indexLabel.config(fg=app.get_hex_green_color())   
+                        index_value=index
+                        detect_button.config(state=NORMAL)
+                     else:
+                        raise Exception("No index found ")     
+                 elif value == "all":
+                     index_str.set(f"We are going to detect all {elt} {app.get_congrat_unicode()}")
+                     indexLabel.config(fg=app.get_hex_green_color())   
+                     index_value=value
+                     detect_button.config(state=NORMAL)
+                 else:
+                     raise Exception("No index found ")   
+            except Exception as e:
+                 index_str.set(f"Error : {e} {app.get_cross_mark_unicode()}")
+                 indexLabel.config(fg="red")
+                 entry.config(state=NORMAL)    
+                 get_button.config(state=NORMAL)
+        #Entry box
+        entry=Entry(OMS_frame,bg=app.get_hex_white_color(),
+                    fg=app.get_hex_green_color(),font=app.get_entry_font(),
+                    width=29)
+        entry.pack(pady=5)
+        entry.insert(0,"Enter a name or all")
+        # Button(for Get Index)
+        get_button = Button(OMS_frame, text=f"{app.get_objects_unicode()} Get index for the {elt}", 
+                              command=get_index,font=app.get_button_font(),
+                              width=52, height=2,
+                              bg=app.get_hex_green_color(),
+                              fg=app.get_hex_white_color())
+        get_button.pack(pady=3)
+        
+        #index label
+        indexLabel = Label(OMS_frame, textvariable=index_str, font=app.get_loading_font(), 
+                          fg=app.get_hex_green_color(),bg=app.get_hex_white_color())
+        indexLabel.pack(pady=3)
+        
+         #detect 
+        def detect():
+            try:
+                #color
+                resultLabel.config(fg="green")
+                #disable bouton
+                detect_button.config(state=DISABLED)
+                #set result
+                result.set("With the upcoming frame you can drag or resize it but you can't go back")
+                #update frame
+                OMS_frame.update_idletasks()
+                #wait 1 seconds before start
+                time.sleep(3)
+                #close frame 
+                OMS_frame.destroy()
+                #start
+                search.launch_window(choice,index_value)
+            except Exception as e:
+                result.set(f"{e}")
+                resultLabel.config(fg="red")
+                entry.config(state=NORMAL)
+                get_button.config(state=NORMAL)
+               
+                detect_button.config(state=DISABLED)
+            
+        # start Detecting         
+        detect_button = Button(OMS_frame, text=f"{app.get_start_unicode()}  Detect {elt}", 
+                               command=detect,state=DISABLED,
+                               font=app.get_button_font(),
+                               width=22, height=2,
+                               bg=app.get_hex_green_color(),
+                               fg=app.get_hex_white_color())
+        detect_button.pack(pady=5)
+
+        #result label
+        resultLabel = Label(OMS_frame, textvariable=result, font=app.get_loading_font(), 
+                          fg=app.get_hex_green_color(),bg=app.get_hex_white_color())
+        resultLabel.pack(pady=3)
+        
+        # back  
+        def back():   
+            try:
+                #close
+                OMS_frame.destroy()
+                #back to choose page
+                choose.screen_page()
+            except Exception as e:
+                messagebox.showerror(title="Error",message=f"Error : {e}")    
+        back_button = Button(OMS_frame, text=f"{app.get_back_unicode()}  Back", 
+                             command=back,font=app.get_button_font(),
+                             width=22, height=2,
+                             bg=app.get_hex_green_color(),
+                             fg=app.get_hex_white_color())
+        back_button.pack(pady=5)
+        # Window settings
+        OMS_frame.iconphoto(True, icon)
+        OMS_frame.title(app.get_title())
+        OMS_frame.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
+        OMS_frame.resizable(False, False)
+        OMS_frame.config(background=app.get_hex_white_color())
+        OMS_frame.protocol("WM_DELETE_WINDOW", quit_all)
+        #show 
+        OMS_frame.mainloop()
+    except Exception as e:    
+        messagebox.showerror(title="Error",message=f"Error : {e}")
 #-----------------------------------------------------------------------------------------------------------> I am L 

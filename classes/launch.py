@@ -1,5 +1,6 @@
 #-------------------------------------------------------LAUNCH_PAGE------------------------------------------------------#
 #packages
+import os
 import time
 import threading  
 from tkinter import *
@@ -11,7 +12,7 @@ import checkInfo as check
 import choose_page as next
 #next page
 def next_page():
-    next.field_page()
+    next.option_page()
 # Launch frame
 def launch_page():
     try:   
@@ -83,6 +84,10 @@ def launch_page():
                time.sleep(3)
                task.set(f"The program is ready to start  {app.get_smile_unicode()}")
                button.config(state=NORMAL)    
+        #close
+        def quit_all():
+            launch.destroy() #close the frame
+            os._exit(0) #close the process           
         # Avoid blocking the app
         def start_progress():
             threading.Thread(target=progress).start()
@@ -108,6 +113,7 @@ def launch_page():
         launch.geometry(f"{bounds[0]}x{bounds[1]}+{bounds[2]}+{bounds[3]}")
         launch.resizable(False, False)
         launch.config(background=app.get_hex_white_color())
+        launch.protocol("WM_DELETE_WINDOW", quit_all)
         #start
         start_progress()
         #show 

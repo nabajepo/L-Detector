@@ -1,15 +1,22 @@
 #--------------------------------------------SEARCH-FIND-DISPLAY-COMPARE-DATA---------------------------------------------------#
 #packages
 import os
-
+import sys
+import mss
 import threading
 import numpy as np
+import subprocess as sub
 import cv2 as device
 from deepface import DeepFace
 from PIL import Image, ImageTk
+from PyQt5.QtCore import Qt, QTimer
 from tkinter import Tk, Toplevel, Label,PhotoImage,messagebox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtGui import QPainter, QPen, QColor, QBrush,QIcon,QFont,QCursor
 #classes
 import get_set_Data as app
+import detect_page as detect
+
 #-------------------------------------------------------------------------->display images 
 #display images
 def display_images(images, is_matrix):
@@ -320,7 +327,7 @@ def find_faces_in_dbs(dbs,main_folder,face_folder):
     print(f"The program is done with {len(shared_results)} results")    
     return shared_results
 #to find faces in a video or a webcam
-def find_faces_in_VW(faces_folder,work_folder,title,path_videos,resutR):
+def find_faces_in_VW(faces_folder,work_folder,title,path_videos,result_str):
     try:
         if os.path.exists(work_folder):
            #we clean the folder where we are going to work 
@@ -344,6 +351,7 @@ def find_faces_in_VW(faces_folder,work_folder,title,path_videos,resutR):
              #to get the frame and if the video is still active
              ret, frame = cap.read()
              if not ret:
+                result_str.set("The video is finished")
                 break
              #to get the height an width of each frame
              height, width = frame.shape[:2]
@@ -404,7 +412,7 @@ def find_faces_in_VW(faces_folder,work_folder,title,path_videos,resutR):
              device.imshow(title, frame)
              #to quit the frame 
              if device.waitKey(1) & 0xFF == ord("q"):
-                resutR.set("The window is closed ")
+                result_str.set("The window is closed ")
                 break      
         cap.release()
         device.destroyAllWindows()     
@@ -450,6 +458,7 @@ def find_objects_VWI(indexObject,path_video,title,result_str):
             #to get the frame and if the video is still active
              ret, frame = cap.read()
              if not ret:
+                result_str.set("The video is finished")
                 break
              #to get the height an width of each frame
              height, width = frame.shape[:2]
@@ -528,6 +537,7 @@ def find_objects_VWA(path_video,title,result_str):
             #to get the frame and if the video is still active
              ret, frame = cap.read()
              if not ret:
+                result_str.set("The video is finished")
                 break
              #to get the height an width of each frame
              height, width = frame.shape[:2]
@@ -626,6 +636,7 @@ def find_expressions_VWI(indexExpression,path_video,title,result_str):
             #to get the frame and if the video is still active
              ret, frame = cap.read()
              if not ret:
+                result_str.set("The video is finished")
                 break
              #to get the height an width of each frame
              height, width = frame.shape[:2]
@@ -713,6 +724,7 @@ def find_expressions_VWA(path_video,title,result_str):
             #to get the frame and if the video is still active
              ret, frame = cap.read()
              if not ret:
+                result_str.set("The video is finished")
                 break
              #to get the height an width of each frame
              height, width = frame.shape[:2]
@@ -776,4 +788,221 @@ def find_expressions_VWA(path_video,title,result_str):
     except Exception as e:
          messagebox.showerror(title="Error",message=f"Error : {e}")         
 
+#------------------------------------------------------------------------------------------->find objects or micro-expressions on a screen 
+#classes transparentwindow
+class TransparentWindow(QWidget):   
+    def __init__(self,choice,index_value):
+        #import keras
+        import keras
+        #initailisation 
+        super().__init__()
+        #choice and value 
+        self.choice = choice
+        self.index_value=index_value
+        #Get frame bounds
+        bounds = app.get_bounds()[1]
+        #A frameless, transparent window, above everything
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        #Size and position
+        self.setGeometry(bounds[2],bounds[3],bounds[0],bounds[1])
+        #Variables for moving/resizing
+        self.dragging = False
+        self.resizing = False
+        self.drag_position = None 
+        self.resize_margin = 8
+        #Appearance
+        self.border_color = QColor(*app.get_green_in_screen())
+        self.border_width = 4
+        #title
+        if self.index_value == "all":
+            self.title = f"{app.get_title()}({self.choice})  : {self.index_value}"
+        elif self.choice == "objects":
+            self.title = f"{app.get_title()}({self.choice}) : {app.get_Objets()[1][self.index_value]}"
+        else:
+            self.title = f"{app.get_title()}({self.choice}) : {app.get_Expressions()[1][self.index_value]}"   
+        #close Button
+        self.close_button = QPushButton(f"{app.get_trash_unidode()} Close the app", self)
+        self.close_button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 0, 0, 100);
+                color: white;
+                font-weight: bold;
+                border: none;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 0, 0, 240);
+            }
+            """)
+        self.close_button.clicked.connect(self.close_app)
+        #update buttons
+        self.update_button_positions()
+        #yolo (ai)
+        #Variables for display
+        self.detected_elements = []
+        #check choices 
+        if choice == "objects":
+            self.net = device.dnn.readNet(app.path_yolo_objects[0],app.path_yolo_objects[1])
+            self.classes = app.get_Objets()
+        else: #expressions 
+            self.net = device.dnn.readNet(app.path_yolo_face[0],app.path_yolo_face[1])
+            self.model = keras.models.load_model(app.path_to_kera)
+            self.classes = app.get_Expressions()
+        #layers  
+        self.layer_names = self.net.getLayerNames()
+        self.output_layers = [self.layer_names[i - 1] for i in self.net.getUnconnectedOutLayers()]    
+        #Automatic scan (every 500 ms)    
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.scan_screen)
+        self.timer.start(100)    
+
+    #---------------------------------------------->  methods   
+    #close window    
+    def close_app(self):
+        self.close()
+        QApplication.quit()     
+    #Updates the button position according to the current size
+    def update_button_positions(self):
+        margin = 15
+        button_width = 120
+        button_height = 35 
+        #close button
+        self.close_button.setGeometry(self.width() - button_width - margin,margin,button_width,button_height)          
+        #draw the frame
+    def paintEvent(self,event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        #Transparent background
+        painter.setBrush(QBrush(QColor(0, 0, 0, 0)))
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(self.rect())
+        #Border
+        pen = QPen(self.border_color)
+        pen.setWidth(self.border_width)
+        painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(self.rect().adjusted(2, 2, -2, -2))
+        #title
+        painter.setPen(QColor(*app.get_green_draw()))
+        painter.setFont(QFont("Arial", 15, QFont.Bold))
+        painter.drawText(20, 30, self.title) 
+        #for detected_elements
+        small_font = QFont("Arial", 12, QFont.Normal)  # plus petit et pas en gras
+        painter.setFont(small_font)  
+        #to detect element 
+        for (label, x, y) in self.detected_elements:
+            painter.setPen(QColor(*app.get_green_draw()))
+            painter.drawText(x+10 , y - 10, label)  
+
+    #---------------------------------------------> to move and resize the frame  
+    #when we press or we detect you try an action 
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.drag_position = event.globalPos() #to save the actual position of the cursor
+            rect = self.rect() #the actual dimmension of the frame 
+            #If you click near the bottom right corner
+            if abs(event.x() - rect.right()) <= self.resize_margin or abs(event.y() - rect.bottom()) <= self.resize_margin:
+                self.resizing = True #the intention to resize 
+            else:
+                self.dragging = True #the intention to drag         
+    #when we move or resize the frame
+    def mouseMoveEvent(self, event):
+        rect = self.rect()  #the actual dimmension of the frame
+        #Changes the cursor when the mouse approaches the corner 
+        if abs(event.x() - rect.right()) <= self.resize_margin or abs(event.y() - rect.bottom()) <= self.resize_margin:
+            self.setCursor(QCursor(Qt.SizeFDiagCursor))
+        else:
+            self.setCursor(QCursor(Qt.ArrowCursor))     
+        #if we drag or resize   
+        if self.dragging: #we drag 
+            delta = event.globalPos() - self.drag_position
+            self.move(self.x() + delta.x(), self.y() + delta.y()) 
+            self.drag_position = event.globalPos() 
+        elif self.resizing: #we resize (we can not have less than 300x150 size for a frame when we resize)
+            delta = event.globalPos() - self.drag_position 
+            new_width = max(300, self.width() + delta.x()) 
+            new_height = max(150, self.height() + delta.y()) 
+            self.resize(new_width, new_height)
+            self.drag_position = event.globalPos()
+            self.update_button_positions()            
+    #when we release a cursor
+    def mouseReleaseEvent(self, event):
+        self.dragging = False
+        self.resizing = False  
+    #to update button
+    def resizeEvent(self, event):
+        self.update_button_positions() 
+    #-------------------------------------------------> scan screen 
+    #objects
+    def scan_screen(self):
+        x, y, w, h = self.geometry().getRect() #the actual dimmension of the frame     
+        #save  the image
+        with mss.mss() as sct:
+            monitor = {"top": y, "left": x, "width": w, "height": h}
+            screenshot = np.array(sct.grab(monitor))
+            frame = device.cvtColor(screenshot, device.COLOR_BGRA2BGR)
+        #predict 
+        blob = device.dnn.blobFromImage(frame, 1/255.0, (416, 416), swapRB=True, crop=False)
+        self.net.setInput(blob)
+        outputs = self.net.forward(self.output_layers)
+        height, width = frame.shape[:2]
+        boxes, confidences, class_ids = [], [], []    
+        for output in outputs:
+            for detection in output:
+                scores = detection[5:]
+                class_id = np.argmax(scores)
+                confidence = scores[class_id]
+                if confidence > 0.5:
+                    box = detection[0:4] * np.array([width, height, width, height])
+                    (centerX, centerY, w_box, h_box) = box.astype("int")
+                    x_box = int(centerX - w_box / 2)
+                    y_box = int(centerY - h_box / 2)
+                    boxes.append([x_box, y_box, int(w_box), int(h_box)])
+                    confidences.append(float(confidence))
+                    class_ids.append(class_id)
+
+        idxs = device.dnn.NMSBoxes(boxes, confidences, 0.5, 0.4)            
+        self.detected_elements = []
+        #check choice
+        if self.choice == "objects" : 
+           if len(idxs) > 0:
+              for i in idxs.flatten():
+                  x_box, y_box, w_box, h_box = boxes[i]
+                  label = f"{self.classes[1][class_ids[i]]} : ({confidences[i]:.2f})"
+                  if self.index_value == "all" or self.index_value == class_ids[i]:
+                        self.detected_elements.append((label, x_box, y_box))
+                  else : 
+                        pass       
+        else : #expressions
+            if len(idxs) > 0:
+              for i in idxs.flatten():
+                  x_box, y_box, w_box, h_box = boxes[i]
+                  x1 = max(0, x_box)
+                  y1 = max(0, y_box)
+                  x2 = min(width, x_box + w_box)
+                  y2 = min(height, y_box + h_box)
+                  if x2 <= x1 or y2 <= y1:
+                     continue
+                  face = frame[y1:y2, x1:x2]
+                  if face.size == 0:
+                     continue
+                  gray_face = device.cvtColor(face, device.COLOR_BGR2GRAY)
+                  roi = device.resize(gray_face, (48, 48)).reshape(1, 48, 48, 1).astype('float32') / 255.0
+                  pred = self.model.predict(roi)[0]
+                  expression_index = np.argmax(pred)
+                  if self.index_value == "all" or self.index_value == expression_index:
+                     label = f"{self.classes[1][expression_index]} : {pred[expression_index]:.2f}"
+                     self.detected_elements.append((label, x_box, y_box))
+    
+        self.update()
+#launch window
+def launch_window(choice,index_value):
+    windowapp = QApplication(sys.argv)
+    transpwind=TransparentWindow(choice,index_value) 
+    transpwind.setWindowTitle(app.get_title())  
+    transpwind.setWindowIcon(QIcon(app.get_path_to_logo(0)))   
+    transpwind.show()
+    sys.exit(windowapp.exec_())
+             
 #-----------------------------------------------------------------------------------------------------------> I am L          
