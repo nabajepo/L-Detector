@@ -57,8 +57,8 @@ A video demonstration is available here:
 ---
 
 ## Run locally
-
+From the repository root(L-Detector/classes/) : 
 ```bash
 pip install -r requirements.txt
-python classes/main.py
+python main.py
 ```
