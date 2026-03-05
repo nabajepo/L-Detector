@@ -8,10 +8,10 @@
 - **Micro-expressions** (facial expression detection)
 
 It supports multiple input modes:
-- ✅ **Images**
-- ✅ **Videos**
-- ✅ **Webcam**
-- ✅ **Screen / Real-time GUI monitoring (PyQt5)**
+- **Images**
+- **Videos**
+- **Webcam**
+- **Screen / Real-time GUI monitoring (PyQt5)**
 
 This project demonstrates real-time computer vision pipelines using **OpenCV + TensorFlow + DeepFace**, integrated into a **PyQt5 GUI**.
 
