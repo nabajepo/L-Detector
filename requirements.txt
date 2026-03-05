@@ -1,0 +1,9 @@
+opencv-python
+numpy
+tensorflow>=2.11,<2.18
+deepface
+keras
+pillow
+mtcnn
+retina-face
+pyqt5
