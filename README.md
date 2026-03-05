@@ -1,33 +1,64 @@
-# L-Detector
-This program allows you to find specific faces, objects, micro-expressions using images, videos, webcam
+# L-Detector – Real-Time Face, Object & Micro-Expression Detection (Python)
 
-# How does it work ? 
-In this program you will have to choose what you want to do, i.e. you will have 3 possible choices per area. For faces, objects, and microexpressions, we'll each have images (image folders), videos, and webcams. It's up to the user to choose what they want to do.
-For:
-1) Faces ---> Images (here we want to have images containing the faces we want; it's like facial recognition in a database; it's like providing an image with one or more faces, and the program displays the images in the folder containing that face.)
-2) Faces ---> Videos (here it's the same as Faces/Images, but here the user provides a video from which we want to detect the images.)
-3) Faces ---> Webcam (this is also the same as Faces/Images, but here we use the camera.)
-4) Objects ---> Images (here we search for objects in images; the program provides a list of objects it can detect, and in an image folder we search for images with the objects we want to find.)
-5) Objects ---> Videos (It's like objects/images but with a user-supplied video, with "all" meaning we want to detect all objects.)
-6) Objects ---> webcam (It's like objects/images but using the computer's camera.)
-7) Micro-expressions ---> images (Here we search for images with a given expression; the expressions are provided by the program.)
-8) Micro-expressions ---> videos (Here we search for expressions (all) or an expression on a video.)
-9) Micro-expressions ---> webcam (Here it's like Micro-expressions/videos but on the integrated camera.)
+## Overview
+**L-Detector** is an AI-powered detection application built with **Python** that can detect:
 
-# What we need to run the app 
-1) The user must ensure that their Python version is between (or equal to) 3.8 and 3.12
-2) The user must run this command on a terminal:
-a) pip install opencv-python
-b) pip install numpy
-c) pip install tensorflow
-d) pip install deepface
-e) pip install keras
-f) pip install pillow
-g) pip install mtcnn
-h) pip install retina-face
-3) The user must ensure that their Tensorflow version is between (or equal to) 2.11 and 2.17
-4) The user must run the main.py file from the classes folder
+- **Faces** (recognition-style search in a folder/database)
+- **Objects** (object detection)
+- **Micro-expressions** (facial expression detection)
 
-# Link for demonstration : 
-https://youtube.com/playlist?list=PL-wv9I8aC6IkTB4MaiHGUeZvYV_jSHiu0&si=eMMdp4B9cc6gJDEQ
+It supports multiple input modes:
+- ✅ **Images**
+- ✅ **Videos**
+- ✅ **Webcam**
+- ✅ **Screen / Real-time GUI monitoring (PyQt5)**
 
+This project demonstrates real-time computer vision pipelines using **OpenCV + TensorFlow + DeepFace**, integrated into a **PyQt5 GUI**.
+
+---
+
+## Features
+
+### Face Detection / Search
+- **Images:** provide a face (or faces) and search for matching faces inside an image folder (database-like behavior)
+- **Videos:** detect/search faces inside a user-provided video
+- **Webcam:** detect/search faces using the camera
+
+### Object Detection
+- **Images:** search for specific objects in a folder of images (the app shows the list of detectable objects)
+- **Videos:** detect objects in a video (`all` option detects all objects)
+- **Webcam:** detect objects using the camera
+
+### Micro-Expression Detection
+- **Images:** search for images matching a selected expression (list provided by the app)
+- **Videos:** detect all expressions or a specific expression in a video
+- **Webcam:** detect expressions in real time using the camera
+
+### Screen / GUI Real-Time Detection (PyQt5)
+- Real-time detection through a **PyQt5 interface**
+- Continuous monitoring mode (useful for demos and live visualization)
+
+---
+
+## Demo
+A video demonstration is available here:
+- https://youtube.com/playlist?list=PL-wv9I8aC6IkTB4MaiHGUeZvYV_jSHiu0&si=eMMdp4B9cc6gJDEQ
+
+---
+
+## Requirements
+
+### Python Version
+- **Python 3.8 to 3.12**
+
+### TensorFlow Version
+- **TensorFlow 2.11 to 2.17**
+
+---
+
+## Run locally
+
+```bash
+pip install -r requirements.txt
+python classes/main.py
+```
